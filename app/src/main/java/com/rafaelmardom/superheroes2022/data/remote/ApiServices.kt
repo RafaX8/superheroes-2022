@@ -7,9 +7,12 @@ import retrofit2.http.Path
 // ENDPOINTS O SERVICIOS PARA SUPERHEROES
 interface ApiServices {
 
-    @GET ("all.json")
-    fun getSuperHeroes() : Call<List<SuperHeroApiModel>>
+    @GET("all.json")
+    fun getSuperHeroesFeed(): Call<List<SuperHeroApiModel>>
 
-    @GET ("id/{id}.json")
-    fun getSuperHeroById(@Path("{id}") id: Int) : Call<SuperHeroApiModel>
+    @GET("biography/{heroId}.json")
+    fun getBiography(@Path("heroId") heroId: Int): Call<BiographyApiModel>
+
+    @GET("work/{heroId}.json")
+    fun getWork(@Path("heroId") heroId: Int): Call<WorkApiModel>
 }

@@ -6,25 +6,43 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 // RETROFIT
 class ApiClient {
-    private val baseURL = "https://cdn.jsdelivr.net/gh/akabab/superhero-api@0.3.0/api/"
-    private  val services: ApiServices
+
+    private val baseEndPoints: String =
+        "https://cdn.jsdelivr.net/gh/akabab/superhero-api@0.3.0/api/"
+
+    private val apiServices: ApiServices
 
     init {
-        services = buildServices()
+        apiServices = buildApiEndPoints()
     }
 
-    private fun retrofitClient(): Retrofit = Retrofit.Builder().baseUrl(baseURL).addConverterFactory(GsonConverterFactory.create()).build()
+    fun createRetrofitClient() = Retrofit.Builder()
+        .baseUrl(baseEndPoints)
+        .addConverterFactory(GsonConverterFactory.create())
+        .build();
 
-    private fun buildServices() = retrofitClient().create(ApiServices::class.java)
-
+    fun buildApiEndPoints() = createRetrofitClient().create(ApiServices::class.java)
 
     fun getSuperHeroes(): List<SuperHeroApiModel> {
-        val superHeroes = services.getSuperHeroes()
+        val superHeroes = apiServices.getSuperHeroes()
         val response = superHeroes.execute()
-
-        if (response.isSuccessful){
-            return response.body()?: emptyList()
+        if (response.isSuccessful) {
+            return response.body() ?: emptyList()
         }
         return emptyList()
+    }
+
+    fun getBiography(superHeroeId: Int): BiographyApiModel? {
+        val call = apiServices.getBiography(superHeroeId).execute()
+        return if (call.isSuccessful) {
+            call.body()
+        } else {
+            null
+        }
+    }
+
+    fun getWork(superHeroeId: Int): WorkApiModel? {
+        val call = apiServices.getWork(superHeroeId).execute()
+        return call.body()
     }
 }
